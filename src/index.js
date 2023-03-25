@@ -13,16 +13,17 @@ inputEl.addEventListener('input', debounce(onNameInput, DEBOUNCE_DELAY));
 function onNameInput(event){
     const countryName = event.target.value.trim()
     fetchCountries(countryName)
-    .then(renderCountryCard).catch(console.log("Щось пішло не так"))
+    .then(renderCountryCard)
+    .catch(error => console.log("Щось пішло не так"))
     console.log(countryName);
 }
 function renderCountryCard(countries) {
     const markup = countries
-      .map((country) => {
+      .map(({capital, population, languages}) => {
         return `
-            <p><b>Capital:</b> ${country.capital}</p>
-            <p><b>Population:</b> ${country.population}</p>
-            <p><b>Languages:</b> ${country.languages}</p>
+            <p><b>Capital:</b> ${capital}</p>
+            <p><b>Population:</b> ${population}</p>
+            <p><b>Languages:</b> ${Object.values(languages)}</p>
             `;
       })
       .join("");
