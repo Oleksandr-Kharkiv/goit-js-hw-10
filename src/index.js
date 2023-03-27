@@ -1,5 +1,5 @@
 import './css/styles.css';
-import { fetchCountries } from './fetchCountries';
+import { fetchCountries } from './js/fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
@@ -12,6 +12,7 @@ const countryInfoEl = document.querySelector('.country-info');
 inputEl.addEventListener('input', debounce(onNameInput, DEBOUNCE_DELAY));
 
 function onNameInput(event) {
+  // event.preventDefault();
   const countryName = event.target.value.trim();
   countryInfoEl.innerHTML = '';
   countryListEl.innerHTML = '';
@@ -37,7 +38,7 @@ function renderSearchList(countries) {
     .map(({ name, flags }) => {
       return `
             <li class="country-item">
-            <img src="${flags.svg}" alt="${flags.alt} width="40" height="20""><h3>${name.official}</h3>
+            <img src="${flags.svg}" alt="${flags.alt}" width="40" height="20"><h3>${name.official}</h3>
             </li>
             `;
     })
@@ -50,12 +51,14 @@ function renderCountryCard(countries) {
     .map(({ name, flags, capital, population, languages }) => {
       return `
         <div class="country-card">
-        <h2><img src="${flags.svg}" alt="${
+        <h2 class="country-card__title"><img src="${flags.svg}" alt="${
         flags.alt
       } width="40" height="20""> ${name.official}</h2>
-        <p><b>Capital:</b> ${capital}</p>
-        <p><b>Population:</b> ${population}</p>
-        <p><b>Languages:</b> ${Object.values(languages)}</p>
+        <table>
+        <tr><th>Capital:</th><td>${capital}</td></tr>
+        <tr><th>Population:</th><td>${population}</td></tr>
+        <tr><th>Languages:</th><td>${Object.values(languages)}</td></tr>
+      </table>
         </div>
         `;
     })
