@@ -12,25 +12,34 @@ const countryInfoEl = document.querySelector('.country-info');
 inputEl.addEventListener('input', debounce(onNameInput, DEBOUNCE_DELAY));
 
 function onNameInput(event) {
-  // event.preventDefault();
+  event.preventDefault();
   const countryName = event.target.value.trim();
   countryInfoEl.innerHTML = '';
   countryListEl.innerHTML = '';
   if (countryName === '') {
     return;
   }
-  fetchCountries(countryName).then(response => {
-    console.log('Знайдено часткових співпадінь:', response.length);
-    if (response.length > 10) {
-      Notiflix.Notify.info(
-        'Too many matches found. Please enter a more specific name.'
-      );
-    } else if (response.length > 1 && response.length <= 10) {
-      renderSearchList(response);
-    } else if (response.length === 1) {
-      renderCountryCard(response);
-    }
-  });
+  fetchCountries(countryName)
+    .then(response => {
+      console.log('Знайдено співпадінь:', response.length);
+      if (response.length > 10) {
+        Notiflix.Notify.info(
+          'Too many matches found. Please enter a more specific name.'
+        );
+      } else if (response.length > 1 && response.length <= 10) {
+        renderSearchList(response);
+      } else if (response.length === 1) {
+        renderCountryCard(response);
+      }
+    })
+    .catch(error => {
+      if (error.message === '404') {
+        Notiflix.Notify.failure('Oops, there is no country with that name');
+        console.warn(`За вашим запитом країну не знайдено`);
+      } else {
+        console.log(`Виникла помилка при спробі запиту`);
+      }
+    });
 }
 
 function renderSearchList(countries) {
@@ -38,7 +47,7 @@ function renderSearchList(countries) {
     .map(({ name, flags }) => {
       return `
             <li class="country-item">
-            <img src="${flags.svg}" alt="${flags.alt}" width="40" height="20"><h3>${name.official}</h3>
+            <img src="${flags.svg}" alt="${flags.alt}" width="50"><h3>${name.official}</h3>
             </li>
             `;
     })
@@ -51,14 +60,12 @@ function renderCountryCard(countries) {
     .map(({ name, flags, capital, population, languages }) => {
       return `
         <div class="country-card">
-        <h2 class="country-card__title"><img src="${flags.svg}" alt="${
+        <div class="tumb"><img src="${flags.svg}" alt="${
         flags.alt
-      } width="40" height="20""> ${name.official}</h2>
-        <table>
-        <tr><th>Capital:</th><td>${capital}</td></tr>
-        <tr><th>Population:</th><td>${population}</td></tr>
-        <tr><th>Languages:</th><td>${Object.values(languages)}</td></tr>
-      </table>
+      }" width="70"><h2 class="country-card__title"> ${name.official}</h2></div>
+        <p><b>Capital:</b> ${capital}</p>
+        <p><b>Population:</b> ${population}</p>
+        <p><b>Languages:</b> ${Object.values(languages)}</p>
         </div>
         `;
     })
