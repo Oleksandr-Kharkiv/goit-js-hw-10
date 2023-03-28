@@ -24,7 +24,7 @@ function onNameInput(event) {
       console.log('Знайдено співпадінь:', response.length);
       if (response.length > 10) {
         Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name.'
+          'Too many matches found. Please enter a more specific name.', {position: 'center-center'}
         );
       } else if (response.length > 1 && response.length <= 10) {
         renderSearchList(response);
@@ -34,7 +34,7 @@ function onNameInput(event) {
     })
     .catch(error => {
       if (error.message === '404') {
-        Notiflix.Notify.failure('Oops, there is no country with that name');
+        Notiflix.Notify.failure('Oops, there is no country with that name', {position: 'center-center'});
         console.warn(`За вашим запитом країну не знайдено`);
       } else {
         console.log(`Виникла помилка при спробі запиту`);
